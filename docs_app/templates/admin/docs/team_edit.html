@@ -1,0 +1,138 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="docs-admin-edit">
+  <div class="admin-header">
+    <h1>{{ page_title }}</h1>
+    <a href="{% url 'docs:admin' %}" class="btn btn-secondary">← Back to Admin</a>
+  </div>
+  
+  <form method="post" enctype="multipart/form-data" class="edit-form">
+    {% csrf_token %}
+    
+    <div class="form-section">
+      <h2>Basic Information</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="id_name">Full Name *</label>
+          <input type="text" name="name" id="id_name" value="{{ member.name|default:'' }}" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="id_role">Role *</label>
+          <select name="role" id="id_role" required>
+            {% for value, label in roles %}
+            <option value="{{ value }}" {% if member and member.role == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="id_custom_role">Custom Role (if "Other")</label>
+          <input type="text" name="custom_role" id="id_custom_role" value="{{ member.custom_role|default:'' }}">
+        </div>
+        
+        <div class="form-group">
+          <label for="id_email">Email</label>
+          <input type="email" name="email" id="id_email" value="{{ member.email|default:'' }}">
+        </div>
+        
+        <div class="form-group">
+          <label for="id_order">Display Order</label>
+          <input type="number" name="order" id="id_order" value="{{ member.order|default:0 }}" min="0">
+        </div>
+        
+        <div class="form-group">
+          <label for="id_team_order">Team Order</label>
+          <input type="number" name="team_order" id="id_team_order" value="{{ member.team_order|default:0 }}" min="0">
+        </div>
+        
+        <div class="form-group">
+          <label for="id_team_name">Team/Group Name</label>
+          <input type="text" name="team_name" id="id_team_name" value="{{ member.team_name|default:'' }}" placeholder="e.g., Core Team, Advisors, Security Research">
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2>Bio & Links</h2>
+      <div class="form-group">
+        <label for="id_bio">Bio</label>
+        <textarea name="bio" id="id_bio" rows="4">{{ member.bio|default:'' }}</textarea>
+        <p class="help-text">Short bio for hover/tooltip display.</p>
+      </div>
+      
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="id_linkedin">LinkedIn</label>
+          <input type="url" name="linkedin" id="id_linkedin" value="{{ member.linkedin|default:'' }}" placeholder="https://linkedin.com/in/...">
+        </div>
+        <div class="form-group">
+          <label for="id_github">GitHub</label>
+          <input type="url" name="github" id="id_github" value="{{ member.github|default:'' }}" placeholder="https://github.com/...">
+        </div>
+        <div class="form-group">
+          <label for="id_twitter">Twitter/X</label>
+          <input type="url" name="twitter" id="id_twitter" value="{{ member.twitter|default:'' }}" placeholder="https://x.com/...">
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2>Profile Image</h2>
+      <div class="form-group">
+        <label for="id_profile_image">Profile Image</label>
+        <input type="file" name="profile_image" id="id_profile_image" accept="image/*">
+        <p class="help-text">Recommended: 400x400px square aspect ratio. Will be displayed as circle with uniform styling.</p>
+      </div>
+      
+      {% if member and member.profile_image %}
+      <div class="current-image">
+        <p>Current image:</p>
+        <img src="{{ member.profile_image.url }}" alt="{{ member.image_alt }}" style="max-width: 150px; border-radius: 50%; border: 3px solid var(--sx-border);">
+      </div>
+      {% endif %}
+      
+      <div class="form-group">
+        <label for="id_image_alt">Alt Text</label>
+        <input type="text" name="image_alt" id="id_image_alt" value="{{ member.image_alt|default:'' }}" placeholder="Accessibility description">
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2>Display Options</h2>
+      <div class="form-grid">
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" name="is_active" id="id_is_active" {% if member.is_active|default:True %}checked{% endif %}>
+            <span>Active</span>
+          </label>
+        </div>
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" name="show_in_pitch" id="id_show_in_pitch" {% if member.show_in_pitch|default:True %}checked{% endif %}>
+            <span>Show in Pitch Deck</span>
+          </label>
+        </div>
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" name="show_in_tech" id="id_show_in_tech" {% if member.show_in_tech|default:True %}checked{% endif %}>
+            <span>Show in Technical Docs</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save Team Member</button>
+      <a href="{% url 'docs:admin' %}" class="btn btn-secondary">Cancel</a>
+      {% if member %}
+      <a href="{% url 'docs:team_delete' member.id %}" class="btn btn-danger">Delete</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

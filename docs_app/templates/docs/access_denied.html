@@ -1,0 +1,108 @@
+{% extends "docs/base.html" %}
+{% load static %}
+
+{% block title %}Documentation Not Available{% endblock %}
+
+{% block extra_css %}
+<style>
+  .access-denied {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sx-space-8) var(--sx-space-4);
+    text-align: center;
+  }
+  .access-denied-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(227, 93, 106, 0.15), rgba(230, 126, 34, 0.15));
+    border: 2px solid var(--sx-danger);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--sx-space-6);
+    font-size: 3rem;
+  }
+  .access-denied h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    color: var(--sx-text-primary);
+    margin: 0 0 var(--sx-space-3);
+  }
+  .access-denied .message {
+    font-size: 1.125rem;
+    color: var(--sx-text-secondary);
+    max-width: 560px;
+    margin: 0 auto var(--sx-space-6);
+    line-height: 1.6;
+  }
+  .access-denied .schedule-info {
+    background: var(--sx-surface);
+    border: 1px solid var(--sx-border);
+    border-radius: var(--sx-radius-lg);
+    padding: var(--sx-space-5);
+    max-width: 480px;
+    margin: 0 auto var(--sx-space-6);
+    text-align: left;
+  }
+  .access-denied .schedule-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--sx-space-2) 0;
+    border-bottom: 1px solid var(--sx-border);
+  }
+  .access-denied .schedule-row:last-child { border-bottom: none; }
+  .access-denied .schedule-label { color: var(--sx-text-tertiary); font-size: 0.875rem; }
+  .access-denied .schedule-value { color: var(--sx-text-primary); font-weight: 500; font-family: var(--sx-font-mono); font-size: 0.875rem; }
+  .access-denied .btn { margin-top: var(--sx-space-4); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="access-denied">
+  <div class="access-denied-icon" aria-hidden="true">🔒</div>
+  <h1>Documentation Not Available</h1>
+  
+  <p class="message">{{ message|default:"The documentation is currently not accessible. This may be due to scheduled publishing windows or administrator settings." }}</p>
+  
+  {% if access_control %}
+  <div class="schedule-info">
+    <h3 style="margin: 0 0 var(--sx-space-4); font-size: 1rem; color: var(--sx-text-primary);">Access Schedule</h3>
+    
+    {% if access_control.schedule_start %}
+    <div class="schedule-row">
+      <span class="schedule-label">Available From</span>
+      <span class="schedule-value">{{ access_control.schedule_start|date:"M d, Y H:i" }}</span>
+    </div>
+    {% endif %}
+    
+    {% if access_control.schedule_end %}
+    <div class="schedule-row">
+      <span class="schedule-label">Available Until</span>
+      <span class="schedule-value">{{ access_control.schedule_end|date:"M d, Y H:i" }}</span>
+    </div>
+    {% elif access_control.use_duration and access_control.duration_days and access_control.schedule_start %}
+    <div class="schedule-row">
+      <span class="schedule-label">Duration</span>
+      <span class="schedule-value">{{ access_control.duration_days }} days from start</span>
+    </div>
+    {% endif %}
+    
+    {% if not access_control.is_enabled %}
+    <div class="schedule-row">
+      <span class="schedule-label">Status</span>
+      <span class="schedule-value" style="color: var(--sx-danger);">Disabled by Administrator</span>
+    </div>
+    {% endif %}
+  </div>
+  {% endif %}
+  
+  {% if user.is_staff %}
+  <a href="{% url 'docs:admin' %}" class="btn btn-primary">Manage Access Control</a>
+  {% else %}
+  <a href="{% url 'scanner:overview' %}" class="btn btn-primary">Return to scanX</a>
+  {% endif %}
+</div>
+{% endblock %}

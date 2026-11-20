@@ -1,0 +1,161 @@
+/**
+ * scanX Documentation Admin Styles
+ */
+
+/* =====================================================================
+   Layout
+   ===================================================================== */
+.docs-admin { max-width: 1200px; margin: 0 auto; padding: var(--sx-space-6); }
+.admin-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: var(--sx-space-8); flex-wrap: wrap; gap: var(--sx-space-4); }
+.admin-header h1 { margin: 0; font-size: 1.75rem; font-weight: 700; }
+.admin-subtitle { margin: var(--sx-space-1) 0 0; color: var(--sx-text-secondary); }
+
+/* =====================================================================
+   Panels
+   ===================================================================== */
+.admin-panel { background: var(--sx-surface); border: 1px solid var(--sx-border); border-radius: var(--sx-radius-lg); margin-bottom: var(--sx-space-6); overflow: hidden; }
+.panel-header { display: flex; justify-content: space-between; align-items: center; padding: var(--sx-space-4) var(--sx-space-5); border-bottom: 1px solid var(--sx-border); flex-wrap: wrap; gap: var(--sx-space-3); }
+.panel-header h2 { margin: 0; font-size: 1.125rem; font-weight: 600; }
+.panel-form { padding: var(--sx-space-5); }
+
+/* =====================================================================
+   Status Badge
+   ===================================================================== */
+.status-badge { display: inline-flex; align-items: center; padding: var(--sx-space-1) var(--sx-space-3); font-size: 0.75rem; font-weight: 600; border-radius: var(--sx-radius-pill); text-transform: uppercase; letter-spacing: 0.025em; }
+.status-badge.enabled { background: rgba(53, 183, 121, 0.15); color: var(--sx-success); border: 1px solid rgba(53, 183, 121, 0.3); }
+.status-badge.disabled { background: rgba(227, 93, 106, 0.15); color: var(--sx-danger); border: 1px solid rgba(227, 93, 106, 0.3); }
+
+/* =====================================================================
+   Forms
+   ===================================================================== */
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--sx-space-4); }
+.form-group { display: flex; flex-direction: column; gap: var(--sx-space-1); }
+.form-group.full-width { grid-column: 1 / -1; }
+.form-group label { font-size: 0.8125rem; font-weight: 500; color: var(--sx-text-secondary); }
+.form-group label span { font-weight: 400; color: var(--sx-text-tertiary); margin-left: var(--sx-space-1); }
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="url"],
+.form-group input[type="number"],
+.form-group input[type="datetime-local"],
+.form-group input[type="color"],
+.form-group select,
+.form-group textarea {
+  padding: var(--sx-space-2) var(--sx-space-3);
+  background: var(--sx-background);
+  border: 1px solid var(--sx-border);
+  border-radius: var(--sx-radius-md);
+  color: var(--sx-text-primary);
+  font-family: var(--sx-font-sans);
+  font-size: 0.875rem;
+  transition: all var(--sx-transition);
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { outline: none; border-color: var(--sx-primary); box-shadow: 0 0 0 3px var(--sx-primary-muted); }
+.form-group textarea { min-height: 100px; resize: vertical; font-family: var(--sx-font-mono); }
+.form-group input[type="color"] { height: 40px; padding: 2px; cursor: pointer; }
+.help-text { margin: 0; font-size: 0.75rem; color: var(--sx-text-tertiary); }
+
+/* Checkbox Group */
+.checkbox-group label { display: flex; align-items: center; gap: var(--sx-space-2); cursor: pointer; }
+.checkbox-group input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--sx-primary); }
+
+/* Toggle Switch */
+.toggle-switch { position: relative; display: inline-flex; align-items: center; }
+.toggle-switch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.toggle-switch .slider { position: relative; width: 44px; height: 24px; background: var(--sx-border); border-radius: var(--sx-radius-pill); transition: background var(--sx-transition); }
+.toggle-switch .slider::before { content: ""; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; background: var(--sx-text-tertiary); border-radius: 50%; transition: transform var(--sx-transition), background var(--sx-transition); box-shadow: var(--sx-shadow-sm); }
+.toggle-switch input:checked + .slider { background: var(--sx-primary); }
+.toggle-switch input:checked + .slider::before { transform: translateX(20px); background: var(--sx-background); }
+.toggle-switch.small .slider { width: 36px; height: 20px; }
+.toggle-switch.small .slider::before { width: 16px; height: 16px; }
+.toggle-switch input:checked + .slider::before { transform: translateX(16px); }
+.toggle-label { margin-left: var(--sx-space-2); font-size: 0.75rem; color: var(--sx-text-secondary); }
+
+/* Form Actions */
+.form-actions { display: flex; gap: var(--sx-space-3); padding-top: var(--sx-space-4); border-top: 1px solid var(--sx-border); margin-top: var(--sx-space-4); flex-wrap: wrap; }
+
+/* =====================================================================
+   Quick Actions / Presets
+   ===================================================================== */
+.quick-actions { padding: var(--sx-space-5); border-top: 1px solid var(--sx-border); background: var(--sx-background); }
+.quick-actions h3 { margin: 0 0 var(--sx-space-3); font-size: 0.875rem; font-weight: 600; color: var(--sx-text-secondary); }
+.preset-buttons { display: flex; flex-wrap: wrap; gap: var(--sx-space-3); }
+.preset-btn { display: flex; align-items: center; gap: var(--sx-space-2); padding: var(--sx-space-2) var(--sx-space-3); }
+
+/* =====================================================================
+   Sections Table
+   ===================================================================== */
+.sections-table-container { overflow-x: auto; }
+.sections-table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+.sections-table th { text-align: left; padding: var(--sx-space-3); background: var(--sx-background); border-bottom: 1px solid var(--sx-border); font-weight: 600; color: var(--sx-text-tertiary); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+.sections-table td { padding: var(--sx-space-3); border-bottom: 1px solid var(--sx-border); vertical-align: middle; }
+.sections-table tbody tr:hover { background: var(--sx-background); }
+.sections-table tbody tr.dragging { opacity: 0.5; background: var(--sx-primary-muted); }
+.sections-table .order-input { padding: var(--sx-space-1) var(--sx-space-2); background: var(--sx-background); border: 1px solid var(--sx-border); border-radius: var(--sx-radius-sm); color: var(--sx-text-primary); font-family: var(--sx-font-mono); font-size: 0.8125rem; width: 60px; }
+.section-type-badge { display: inline-block; padding: 2px 8px; background: var(--sx-primary-muted); color: var(--sx-primary); border-radius: var(--sx-radius-sm); font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.025em; }
+.live-data-badge { display: inline-block; padding: 2px 8px; background: var(--sx-surface-hover); color: var(--sx-text-secondary); border-radius: var(--sx-radius-sm); font-size: 0.6875rem; font-family: var(--sx-font-mono); }
+.text-center { text-align: center; }
+.text-muted { color: var(--sx-text-tertiary); }
+.btn-danger { background: transparent; color: var(--sx-danger); border-color: var(--sx-danger); }
+.btn-danger:hover { background: var(--sx-danger); color: #fff; }
+
+/* =====================================================================
+   Team Grid
+   ===================================================================== */
+.team-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--sx-space-4); padding: var(--sx-space-5); }
+.team-admin-card { display: flex; align-items: center; gap: var(--sx-space-4); padding: var(--sx-space-4); background: var(--sx-background); border: 1px solid var(--sx-border); border-radius: var(--sx-radius-lg); transition: border-color var(--sx-transition); }
+.team-admin-card:hover { border-color: var(--sx-primary); }
+.team-admin-avatar { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; border: 2px solid var(--sx-border); flex-shrink: 0; }
+.team-admin-avatar.placeholder { display: flex; align-items: center; justify-content: center; background: var(--sx-primary-muted); color: var(--sx-primary); font-size: 1.5rem; font-weight: 700; border: 2px solid var(--sx-primary); }
+.team-admin-info { flex: 1; min-width: 0; }
+.team-admin-info h4 { margin: 0 0 2px; font-size: 0.9375rem; font-weight: 600; }
+.team-admin-role { font-size: 0.75rem; color: var(--sx-primary); font-weight: 500; }
+.team-admin-team { display: block; font-size: 0.6875rem; color: var(--sx-text-tertiary); margin-top: 2px; }
+.team-admin-actions { display: flex; align-items: center; gap: var(--sx-space-2); flex-wrap: wrap; }
+.empty-state { grid-column: 1 / -1; text-align: center; padding: var(--sx-space-10); color: var(--sx-text-tertiary); }
+.empty-state .btn { margin-top: var(--sx-space-4); }
+
+/* =====================================================================
+   Modal
+   ===================================================================== */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; padding: var(--sx-space-4); z-index: 1000; animation: fadeIn 150ms ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.modal { background: var(--sx-surface); border: 1px solid var(--sx-border); border-radius: var(--sx-radius-xl); width: 100%; max-width: 720px; max-height: 90vh; overflow-y: auto; animation: slideUp 200ms ease; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.modal-header { display: flex; justify-content: space-between; align-items: center; padding: var(--sx-space-4) var(--sx-space-5); border-bottom: 1px solid var(--sx-border); }
+.modal-header h3 { margin: 0; font-size: 1.125rem; font-weight: 600; }
+.modal-close { background: none; border: none; font-size: 1.5rem; color: var(--sx-text-tertiary); cursor: pointer; padding: var(--sx-space-1); line-height: 1; }
+.modal-close:hover { color: var(--sx-text-primary); }
+.modal form { padding: var(--sx-space-5); }
+.form-section { margin-bottom: var(--sx-space-6); padding-bottom: var(--sx-space-6); border-bottom: 1px solid var(--sx-border); }
+.form-section:last-of-type { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.form-section h2 { margin: 0 0 var(--sx-space-4); font-size: 1rem; font-weight: 600; color: var(--sx-text-primary); }
+.modal-actions { display: flex; justify-content: flex-end; gap: var(--sx-space-3); padding-top: var(--sx-space-4); border-top: 1px solid var(--sx-border); margin-top: var(--sx-space-4); }
+
+/* =====================================================================
+   Versions Table
+   ===================================================================== */
+.versions-table { overflow-x: auto; }
+.versions-table table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+.versions-table th { text-align: left; padding: var(--sx-space-2) var(--sx-space-3); background: var(--sx-background); border-bottom: 1px solid var(--sx-border); font-weight: 600; color: var(--sx-text-tertiary); font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.versions-table td { padding: var(--sx-space-2) var(--sx-space-3); border-bottom: 1px solid var(--sx-border); }
+
+/* =====================================================================
+   Current Image Preview
+   ===================================================================== */
+.current-image { margin-top: var(--sx-space-3); padding-top: var(--sx-space-3); border-top: 1px solid var(--sx-border); }
+.current-image p { margin: 0 0 var(--sx-space-2); font-size: 0.8125rem; color: var(--sx-text-secondary); }
+
+/* =====================================================================
+   Responsive
+   ===================================================================== */
+@media (max-width: 768px) {
+  .docs-admin { padding: var(--sx-space-4); }
+  .admin-header { flex-direction: column; align-items: flex-start; }
+  .form-grid { grid-template-columns: 1fr; }
+  .sections-table th, .sections-table td { padding: var(--sx-space-2); }
+  .team-grid { grid-template-columns: 1fr; }
+  .modal { max-width: 100%; max-height: 100vh; border-radius: 0; }
+}

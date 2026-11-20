@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     # Local apps
     "scanner",
     "core",
+    "docs_app",
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,169 @@
+{% load static docs_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>{% block title %}{{ settings.site_title|default:"scanX Documentation" }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ settings.meta_description|default:"AI-Powered Security Reconnaissance Platform Documentation" }}{% endblock %}">
+  <meta name="keywords" content="{{ settings.meta_keywords }}">
+  <meta property="og:title" content="{{ settings.site_title }}">
+  <meta property="og:description" content="{{ settings.meta_description }}">
+  <meta property="og:type" content="website">
+  {% if settings.og_image %}
+  <meta property="og:image" content="{{ settings.og_image.url }}">
+  {% endif %}
+  <meta name="twitter:card" content="summary_large_image">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Mermaid for diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script>mermaid.initialize({ startOnLoad: true, theme: 'dark', securityLevel: 'loose' });</script>
+  
+  <!-- Marked for markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12/marked.min.js"></script>
+  
+  <link rel="stylesheet" href="{% static 'docs/css/docs.css' %}?v=1">
+  {% block extra_css %}{% endblock %}
+  
+  <style>
+    :root {
+      --sx-primary: {{ settings.primary_color|default:"#76B900" }};
+      --sx-accent: {{ settings.accent_color|default:"#35B779" }};
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <a href="#main-content" class="sr-only-skip">Skip to main content</a>
+  
+  {% if settings.maintenance_mode and not user.is_staff %}
+  <div class="maintenance-banner" role="alert">
+    <span class="icon">🔧</span>
+    <span>{{ settings.maintenance_message }}</span>
+  </div>
+  {% endif %}
+  
+  <header class="docs-header" role="banner">
+    <div class="header-inner">
+      <div class="header-brand">
+        <a href="{% url 'docs:home' %}" class="brand-link" aria-label="{{ settings.site_title }} Home">
+          {% if settings.logo %}
+            <img src="{{ settings.logo.url }}" alt="" class="brand-logo">
+          {% else %}
+            <svg class="brand-mark" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="7" height="7" rx="1"/>
+            </svg>
+          {% endif %}
+          <span class="brand-text">{{ settings.site_title }}</span>
+        </a>
+      </div>
+      
+      <nav class="header-nav" aria-label="Documentation navigation">
+        <div class="view-toggle" role="group" aria-label="View mode">
+          <a href="?view=pitch" class="view-btn {% if view_mode == 'pitch' %}active{% endif %}" data-view="pitch">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Pitch Deck
+          </a>
+          <a href="?view=tech" class="view-btn {% if view_mode == 'tech' %}active{% endif %}" data-view="tech">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 18 2 12 8 6"/></svg>
+            Technical Docs
+          </a>
+        </div>
+        
+        {% if settings.enable_search %}
+        <div class="search-container">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="docs-search" class="search-input" placeholder="Search documentation..." aria-label="Search documentation" autocomplete="off">
+          <div id="search-results" class="search-results" role="listbox" aria-hidden="true"></div>
+        </div>
+        {% endif %}
+        
+        {% if user.is_staff %}
+        <a href="{% url 'docs:admin' %}" class="btn btn-ghost btn-sm admin-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Admin
+        </a>
+        {% endif %}
+        
+        {% if settings.enable_export_pdf or settings.enable_export_md %}
+        <div class="export-dropdown">
+          <button class="btn btn-primary export-trigger" aria-expanded="false" aria-haspopup="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export
+          </button>
+          <div class="export-menu" role="menu" aria-hidden="true">
+            {% if settings.enable_export_pdf %}
+            <a href="{% url 'docs:export' %}?format=pdf&view={{ view_mode }}" class="export-item" role="menuitem">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              PDF
+            </a>
+            {% endif %}
+            {% if settings.enable_export_md %}
+            <a href="{% url 'docs:export' %}?format=markdown&view={{ view_mode }}" class="export-item" role="menuitem">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+              Markdown
+            </a>
+            {% endif %}
+            <a href="{% url 'docs:export' %}?format=html&view={{ view_mode }}" class="export-item" role="menuitem">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+              HTML
+            </a>
+          </div>
+        </div>
+        {% endif %}
+      </nav>
+    </div>
+    
+    <!-- Table of Contents Sidebar (desktop) -->
+    {% if settings.enable_toc %}
+    <nav class="toc-sidebar" id="tocSidebar" aria-label="Table of contents">
+      <div class="toc-header">
+        <h3>Contents</h3>
+        <button class="toc-toggle" id="tocToggle" aria-expanded="true" aria-controls="tocList">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>
+        </button>
+      </div>
+      <ul class="toc-list" id="tocList" role="list"></ul>
+    </nav>
+    {% endif %}
+  </header>
+  
+  <div class="docs-layout">
+    <main class="docs-main" id="main-content" role="main">
+      {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Mobile TOC button -->
+    {% if settings.enable_toc %}
+    <button class="mobile-toc-btn" id="mobileTocBtn" aria-expanded="false" aria-controls="tocSidebar" aria-label="Open table of contents">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    {% endif %}
+  </div>
+  
+  <footer class="docs-footer" role="contentinfo">
+    <div class="footer-inner">
+      <p class="footer-copyright">&copy; {{ "now"|date:"Y" }} {{ settings.site_title }}. Built with scanX.</p>
+      <div class="footer-links">
+        <a href="{% url 'scanner:overview' %}" target="_blank">scanX App</a>
+        <span class="divider">·</span>
+        <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+        <span class="divider">·</span>
+        <span>v{% docs_version %}</span>
+      </div>
+    </div>
+  </footer>
+  
+  <script src="{% static 'docs/js/docs.js' %}?v=1"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

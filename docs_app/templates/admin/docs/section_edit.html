@@ -1,0 +1,156 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="docs-admin-edit">
+  <div class="admin-header">
+    <h1>{{ page_title }}</h1>
+    <a href="{% url 'docs:admin' %}" class="btn btn-secondary">← Back to Admin</a>
+  </div>
+  
+  <form method="post" class="edit-form">
+    {% csrf_token %}
+    
+    <div class="form-section">
+      <h2>Section Identity</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="id_section_type">Section Type *</label>
+          <select name="section_type" id="id_section_type" required>
+            {% for value, label in section_types %}
+            <option value="{{ value }}" {% if section and section.section_type == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="id_content_type">Content Type</label>
+          <select name="content_type" id="id_content_type">
+            {% for value, label in content_types %}
+            <option value="{{ value }}" {% if section and section.content_type == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="id_order">Display Order</label>
+          <input type="number" name="order" id="id_order" value="{{ section.order|default:0 }}" min="0">
+        </div>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2>Content</h2>
+      <div class="form-group">
+        <label for="id_title">Title *</label>
+        <input type="text" name="title" id="id_title" value="{{ section.title|default:'' }}" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="id_subtitle">Subtitle</label>
+        <input type="text" name="subtitle" id="id_subtitle" value="{{ section.subtitle|default:'' }}">
+      </div>
+      
+      <div class="form-group">
+        <label for="id_live_data_source">Live Data Provider</label>
+        <select name="live_data_source" id="id_live_data_source">
+          <option value="">None (static content)</option>
+          {% for provider in live_data_providers %}
+          <option value="{{ provider }}" {% if section and section.live_data_source == provider %}selected{% endif %}>{{ provider }}</option>
+          {% endfor %}
+        </select>
+        <p class="help-text">Select a live data provider to inject real-time data. Available: feature_matrix, architecture, tech_stack, api_docs, data_layer, ai_layer, performance, security, roadmap, changelog</p>
+      </div>
+      
+      <div class="form-group">
+        <label for="id_live_data_config">Live Data Config (JSON)</label>
+        <textarea name="live_data_config" id="id_live_data_config" rows="4">{{ section.live_data_config|json_script:"live-data-config" }}</textarea>
+        <p class="help-text">JSON configuration passed to the live data provider.</p>
+      </div>
+      
+      <div class="form-group">
+        <label for="id_content">Content *</label>
+        <textarea name="content" id="id_content" rows="20" required>{{ section.content|default:'' }}</textarea>
+        <p class="help-text">Supports Markdown, HTML, or Mermaid diagrams based on content type.</p>
+      </div>
+    </div>
+    
+    <div class="form-section">
+      <h2>Display Options</h2>
+      <div class="form-grid">
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" name="is_active" id="id_is_active" {% if section.is_active|default:True %}checked{% endif %}>
+            <span>Active</span>
+          </label>
+        </div>
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" name="is_pitch_deck" id="id_is_pitch_deck" {% if section.is_pitch_deck|default:True %}checked{% endif %}>
+            <span>Show in Pitch Deck</span>
+          </label>
+        </div>
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" name="is_technical" id="id_is_technical" {% if section.is_technical|default:True %}checked{% endif %}>
+            <span>Show in Technical Docs</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    
+    {% if section %}
+    <div class="form-section">
+      <h2>Version History</h2>
+      <div class="versions-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Author</th>
+              <th>Change Note</th>
+              <th>Published</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for version in section.versions.all|slice:":10" %}
+            <tr>
+              <td>{{ version.created_at|date:"M d, Y H:i" }}</td>
+              <td>{{ version.created_by|default:"—" }}</td>
+              <td>{{ version.change_note }}</td>
+              <td>{% if version.is_published %}Yes{% else %}No{% endif %}</td>
+              <td>
+                <button type="button" class="btn btn-ghost btn-sm" onclick="restoreVersion('{{ version.id }}')">Restore</button>
+              </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5">No previous versions.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% endif %}
+    
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Save Section</button>
+      <a href="{% url 'docs:admin' %}" class="btn btn-secondary">Cancel</a>
+      {% if section %}
+      <a href="{% url 'docs:section_delete' section.id %}" class="btn btn-danger">Delete</a>
+      {% endif %}
+    </div>
+  </form>
+</div>
+
+<script>
+function restoreVersion(versionId) {
+  if (confirm('Restore this version? Current content will be saved as a new version first.')) {
+    // This would need a restore endpoint
+    alert('Version restore not yet implemented');
+  }
+}
+</script>
+{% endblock %}
